@@ -12,4 +12,3 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .DS_Store
-assets/videos/wonderreel_task_*.mp4
