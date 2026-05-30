@@ -3,9 +3,35 @@
    ========================================== */
 
 // Configuration
-const API_BASE_URL = 'http://localhost:3001/api';
+const DEFAULT_API_BASE_URL = 'http://localhost:3001/api';
 const STORAGE_KEY = 'wonderreel_data';
 const LANG_STORAGE_KEY = 'wonderreel_lang';
+const GENERATED_LESSONS_KEY = 'wonderreel_generated_lessons';
+
+function getApiBaseUrl() {
+  try {
+    const url = new URL(window.location.href);
+    const fromQuery = url.searchParams.get('api');
+    if (fromQuery) return fromQuery.replace(/\/+$/, '');
+  } catch (e) {
+    void e;
+  }
+
+  const stored = localStorage.getItem('wonderreel_api_base_url');
+  if (stored) return stored.replace(/\/+$/, '');
+
+  return DEFAULT_API_BASE_URL;
+}
+
+function toAbsoluteAssetUrl(maybeRelativeUrl) {
+  if (!maybeRelativeUrl) return null;
+  if (/^https?:\/\//i.test(maybeRelativeUrl)) return maybeRelativeUrl;
+
+  const apiBase = getApiBaseUrl();
+  const baseOrigin = apiBase.replace(/\/api\/?$/i, '');
+  const path = maybeRelativeUrl.startsWith('/') ? maybeRelativeUrl : `/${maybeRelativeUrl}`;
+  return `${baseOrigin}${path}`;
+}
 
 const SUPPORTED_LANGS = ['en', 'id', 'zh', 'ar'];
 
@@ -422,6 +448,30 @@ const sampleLessons = [
   }
 ];
 
+function getGeneratedLessons() {
+  const stored = localStorage.getItem(GENERATED_LESSONS_KEY);
+  if (!stored) return [];
+  try {
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    void e;
+    return [];
+  }
+}
+
+function saveGeneratedLessons(lessons) {
+  try {
+    localStorage.setItem(GENERATED_LESSONS_KEY, JSON.stringify(lessons));
+  } catch (e) {
+    void e;
+  }
+}
+
+function getAllLessons() {
+  return [...getGeneratedLessons(), ...sampleLessons];
+}
+
 // Application State
 let appState = {
   currentLesson: null,
@@ -769,9 +819,10 @@ function renderHomeRows() {
 
   const userData = getUserData();
 
-  const featured = sampleLessons.slice(0, 10);
-  const newest = [...sampleLessons].reverse().slice(0, 10);
-  const favorites = sampleLessons.filter((lesson) => userData.favorites.includes(lesson.id));
+  const all = getAllLessons();
+  const featured = all.slice(0, 10);
+  const newest = [...all].reverse().slice(0, 10);
+  const favorites = all.filter((lesson) => userData.favorites.includes(lesson.id));
 
   featuredEl.innerHTML = featured.map((lesson) => createLessonTile(lesson)).join('');
   newEl.innerHTML = newest.map((lesson) => createLessonTile(lesson)).join('');
@@ -833,10 +884,10 @@ function createLessonTile(lesson) {
 
 function renderGallery(filter = 'all') {
   const galleryContainer = document.getElementById('galleryLessons');
-  let lessons = sampleLessons;
+  let lessons = getAllLessons();
   
   if (filter !== 'all') {
-    lessons = sampleLessons.filter(lesson => lesson.category === filter);
+    lessons = lessons.filter(lesson => lesson.category === filter);
   }
   
   if (lessons.length === 0) {
@@ -871,7 +922,7 @@ function renderMyList() {
   
   emptyState.style.display = 'none';
   
-  const favoriteLessons = sampleLessons.filter(lesson => 
+  const favoriteLessons = getAllLessons().filter(lesson => 
     userData.favorites.includes(lesson.id)
   );
   
@@ -929,7 +980,7 @@ function updateStats() {
   
   // Total lessons
   const totalEl = document.getElementById('totalLessons');
-  if (totalEl) totalEl.textContent = sampleLessons.length;
+  if (totalEl) totalEl.textContent = getAllLessons().length;
   
   // Favorites count
   const favEl = document.getElementById('favoritesCount');
@@ -947,7 +998,7 @@ function updateStats() {
 // ==================== VIDEO MODAL ====================
 
 function openLessonModal(lessonId) {
-  const lesson = sampleLessons.find(l => l.id === lessonId);
+  const lesson = getAllLessons().find(l => l.id === lessonId);
   if (!lesson) return;
   
   appState.currentLesson = lesson;
@@ -1177,7 +1228,7 @@ async function generateVideo() {
   
   try {
     // Call backend API
-    const response = await fetch(`${API_BASE_URL}/generate`, {
+    const response = await fetch(`${getApiBaseUrl()}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -1213,7 +1264,7 @@ function startPolling() {
   
   appState.generationPollInterval = setInterval(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/generate/${appState.generationTaskId}`);
+      const response = await fetch(`${getApiBaseUrl()}/generate/${appState.generationTaskId}`);
       const result = await response.json();
       
       if (result.success) {
@@ -1223,7 +1274,7 @@ function startPolling() {
         
         if (result.data.status === 'completed') {
           clearInterval(appState.generationPollInterval);
-          completeGeneration();
+          completeGeneration(result.data);
         } else if (result.data.status === 'failed') {
           clearInterval(appState.generationPollInterval);
           failGeneration(result.data.error);
@@ -1246,6 +1297,9 @@ function startPolling() {
 function simulateGeneration() {
   const progressFill = document.getElementById('progressFill');
   const progressText = document.getElementById('progressText');
+  const promptInput = document.getElementById('promptInput');
+  const durationInput = document.getElementById('durationInput');
+  const categoryInput = document.getElementById('categoryInput');
   
   let progress = 0;
   const interval = setInterval(() => {
@@ -1253,7 +1307,16 @@ function simulateGeneration() {
     if (progress >= 100) {
       progress = 100;
       clearInterval(interval);
-      completeGeneration();
+      completeGeneration({
+        taskId: appState.generationTaskId || `demo_${Date.now()}`,
+        status: 'completed',
+        progress: 100,
+        videoUrl: 'assets/videos/ocean-animals-part1.mp4',
+        error: null,
+        prompt: promptInput?.value || '',
+        duration: parseInt(durationInput?.value || '6', 10),
+        createdAt: new Date().toISOString()
+      });
     }
     
     progressFill.style.width = `${progress}%`;
@@ -1261,14 +1324,58 @@ function simulateGeneration() {
   }, 500);
 }
 
-function completeGeneration() {
+function completeGeneration(taskData) {
   const generateBtn = document.getElementById('generateBtn');
   const progressCard = document.getElementById('generationProgress');
+  const promptInput = document.getElementById('promptInput');
+  const durationInput = document.getElementById('durationInput');
+  const categoryInput = document.getElementById('categoryInput');
   
   generateBtn.disabled = false;
   generateBtn.innerHTML = `<span>✨</span> ${t('generate_btn')}`;
   progressCard.style.display = 'none';
   
+  try {
+    const prompt = (taskData?.prompt ?? promptInput?.value ?? '').trim();
+    const duration = Number.parseInt(taskData?.duration ?? durationInput?.value ?? '6', 10);
+    const category = (taskData?.category ?? categoryInput?.value ?? 'general');
+    const videoUrl = toAbsoluteAssetUrl(taskData?.videoUrl) || 'assets/videos/ocean-animals-part1.mp4';
+    const createdAt = taskData?.createdAt || new Date().toISOString();
+    const id = taskData?.taskId || appState.generationTaskId || `gen_${Date.now()}`;
+
+    const lessonTitle = {
+      en: 'Generated Lesson',
+      id: 'Lesson Buatan',
+      zh: '生成课程',
+      ar: 'درس مُولَّد'
+    };
+
+    const shortDesc = prompt ? prompt.slice(0, 140) : 'Generated video.';
+    const lessonDesc = { en: shortDesc, id: shortDesc, zh: shortDesc, ar: shortDesc };
+
+    const generatedLesson = {
+      id,
+      title: lessonTitle,
+      description: lessonDesc,
+      category,
+      duration: Number.isFinite(duration) ? duration : 6,
+      videoUrl,
+      thumbnail: 'assets/images/hero-bg.jpg',
+      rating: 5.0,
+      tags: [category, 'generated']
+    };
+
+    const current = getGeneratedLessons();
+    const next = [generatedLesson, ...current.filter((l) => l?.id !== id)].slice(0, 50);
+    saveGeneratedLessons(next);
+    renderDashboard();
+    renderGallery(getActiveFilter());
+    renderMyList();
+    updateStats();
+  } catch (e) {
+    void e;
+  }
+
   showToast(t('toast_generation_success'), 'success');
   
   // Navigate to gallery
