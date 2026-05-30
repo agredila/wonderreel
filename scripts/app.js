@@ -407,8 +407,8 @@ const sampleLessons = [
       zh: '用有趣的画面认识海洋动物。',
       ar: 'تعرّف على حيوانات البحر بصور ممتعة.'
     },
-    category: 'ocean',
-    duration: 20,
+    category: 'numbers',
+    duration: 30,
     videoUrl: 'assets/videos/ocean-animals-part1.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=225&fit=crop',
     rating: 4.5,
@@ -424,8 +424,8 @@ const sampleLessons = [
       ar: 'تعلّم العدّ مع رسوم متحركة ممتعة.'
     },
     category: 'numbers',
-    duration: 15,
-    videoUrl: 'assets/videos/numbers-placeholder.mp4',
+    duration: 30,
+    videoUrl: 'assets/videos/ocean-animals-part2.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=225&fit=crop',
     rating: 4.8,
     tags: ['numbers', 'math', 'education']
@@ -439,9 +439,9 @@ const sampleLessons = [
       zh: '用有趣的方式认识明亮的颜色。',
       ar: 'تعرّف على الألوان الزاهية بطريقة ممتعة.'
     },
-    category: 'colors',
-    duration: 12,
-    videoUrl: null,
+    category: 'numbers',
+    duration: 30,
+    videoUrl: 'assets/videos/ocean-animals-part1.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&h=225&fit=crop',
     rating: 4.2,
     tags: ['colors', 'rainbow', 'education']
