@@ -410,7 +410,7 @@ const sampleLessons = [
     category: 'numbers',
     duration: 30,
     videoUrl: 'assets/videos/ocean-animals-part1.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=225&fit=crop',
+    thumbnail: 'assets/images/hero-bg.jpg',
     rating: 4.5,
     tags: ['ocean', 'animals', 'education']
   },
@@ -426,7 +426,7 @@ const sampleLessons = [
     category: 'numbers',
     duration: 30,
     videoUrl: 'assets/videos/ocean-animals-part2.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=225&fit=crop',
+    thumbnail: 'assets/images/hero-bg.jpg',
     rating: 4.8,
     tags: ['numbers', 'math', 'education']
   },
@@ -442,9 +442,64 @@ const sampleLessons = [
     category: 'numbers',
     duration: 30,
     videoUrl: 'assets/videos/ocean-animals-part1.mp4',
-    thumbnail: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=400&h=225&fit=crop',
+    thumbnail: 'assets/images/hero-bg.jpg',
     rating: 4.2,
     tags: ['colors', 'rainbow', 'education']
+  },
+  {
+    id: 'numbers-demo-1',
+    title: { en: 'Numbers Demo 1' },
+    description: { en: 'Demo lesson video.' },
+    category: 'numbers',
+    duration: 30,
+    videoUrl: 'assets/videos/wonderreel_task_1780123050481_zadsewfg5.mp4',
+    thumbnail: 'assets/images/hero-bg.jpg',
+    rating: 4.9,
+    tags: ['numbers', 'demo']
+  },
+  {
+    id: 'numbers-demo-2',
+    title: { en: 'Numbers Demo 2' },
+    description: { en: 'Demo lesson video.' },
+    category: 'numbers',
+    duration: 30,
+    videoUrl: 'assets/videos/wonderreel_task_1780129496002_dv07iiwb7.mp4',
+    thumbnail: 'assets/images/hero-bg.jpg',
+    rating: 4.9,
+    tags: ['numbers', 'demo']
+  },
+  {
+    id: 'numbers-demo-3',
+    title: { en: 'Numbers Demo 3' },
+    description: { en: 'Demo lesson video.' },
+    category: 'numbers',
+    duration: 30,
+    videoUrl: 'assets/videos/wonderreel_task_1780131616348_wx3dww1ag.mp4',
+    thumbnail: 'assets/images/hero-bg.jpg',
+    rating: 4.9,
+    tags: ['numbers', 'demo']
+  },
+  {
+    id: 'numbers-demo-4',
+    title: { en: 'Numbers Demo 4' },
+    description: { en: 'Demo lesson video.' },
+    category: 'numbers',
+    duration: 30,
+    videoUrl: 'assets/videos/wonderreel_task_1780132148732_4gfvgr19t.mp4',
+    thumbnail: 'assets/images/hero-bg.jpg',
+    rating: 4.9,
+    tags: ['numbers', 'demo']
+  },
+  {
+    id: 'numbers-demo-5',
+    title: { en: 'Numbers Demo 5' },
+    description: { en: 'Demo lesson video.' },
+    category: 'numbers',
+    duration: 30,
+    videoUrl: 'assets/videos/wonderreel_task_1780132423847_l5fqoxel5.mp4',
+    thumbnail: 'assets/images/hero-bg.jpg',
+    rating: 4.9,
+    tags: ['numbers', 'demo']
   }
 ];
 
