@@ -1,12 +1,14 @@
 # WonderReel
 
-WonderReel is a prompt-to-video demo built for the TRAE × PixVerse track.
+WonderReel — Little Films, Big Lessons.
 
-It generates short videos with PixVerse and adds meaningful functionality beyond playback:
+WonderReel is a prompt-to-video demo built for the TRAE × PixVerse track. It turns early-learning topics into delightful AI-generated short films in a kid-safe interface.
+
+It adds meaningful functionality beyond playback:
 - My List (saved videos)
 - Likes (voting)
 - Comments
-- “Purchase” (demo UI / personalization signal)
+- Purchase (demo UI / personalization signal)
 - Multi-language UI (EN / ID / ZH / AR)
 
 ## Repo
