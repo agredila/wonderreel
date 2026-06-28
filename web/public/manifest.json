@@ -1,0 +1,17 @@
+{
+  "name": "WonderReel",
+  "short_name": "WonderReel",
+  "description": "Little Films, Big Lessons.",
+  "start_url": "/en/kid",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
